@@ -1,0 +1,17 @@
+{% extends 'rimrock_communication/base.html' %}
+
+{% block content %}
+    <a href="{% url 'action' %}">
+        <button type="button" class="btn btn-primary">Left</button>
+    </a>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+
