@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^jobs/', include('rimrock_communication.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('allauth.urls')),
 ]

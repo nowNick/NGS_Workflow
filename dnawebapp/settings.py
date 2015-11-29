@@ -37,7 +37,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rimrock_communication'
+    'rimrock_communication',
+
+    #django allauth requirements
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -69,8 +76,22 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
 WSGI_APPLICATION = 'dnawebapp.wsgi.application'
 
+SOCIALACCOUNT_PROVIDERS = \
+    { 'openid':
+            { 'SERVERS':
+                  dict(id='plgrid', name='PlGrid', openid_url='https://openid.plgrid.pl')}}
+
+SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
