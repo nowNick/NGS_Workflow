@@ -17,7 +17,9 @@ def new_job(request):
     job_form = JobForm(request.POST)
 
     if job_form.is_valid():
-        job_form.save()
+        job = job_form.save(commit=False)
+        job.user = request.user
+        job.save()
         return redirect('index')
 
     print job_form.errors
