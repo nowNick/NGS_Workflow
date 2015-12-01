@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse navbar-static-top navbar-padded">
+<nav class="navbar navbar-landing navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -8,17 +8,18 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{% url 'all_jobs' %}">NGS Workflow</a>
+      <a class="navbar-brand" href="{% url 'landing_page' %}">NGS Workflow</a>
     </div>
 
     <div class="collapse navbar-collapse" id="navigation-bar">
-      <ul class="nav navbar-nav">
-        <li id="navbar-index-link"><a href="{% url 'all_jobs' %}">All jobs</a></li>
-        <li id="navbar-new-link"><a href="{% url 'new' %}">Submit a new job</a></li>
-      </ul>
       <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
         <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
         <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+      {% else %}
+        <li><a href="{% url 'account_login' %}">Sign In</a></li>
+        <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+      {% endif %}
       </ul>
     </div>
   </div>

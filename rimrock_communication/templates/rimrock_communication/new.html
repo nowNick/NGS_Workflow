@@ -21,7 +21,8 @@
 
         <div class="form-group">
           <label for="sequence-read-url">Sequence read file url (fastq.gz format)</label>
-          <input name="sequence_read_url" type="text" class="form-control" id="sequence-read-url" placeholder="File Url">
+          <input name="sequence_read_url" type="text" class="form-control" id="sequence-read-url"
+                 placeholder="File Url">
         </div>
 
         <div class="form-group">
@@ -70,6 +71,11 @@
       </form>
     </div>
   </div>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $("#navbar-new-link").addClass("active");
+    });
+  </script>
 {% endblock %}
 
 

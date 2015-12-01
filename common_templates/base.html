@@ -15,33 +15,9 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}" />
   </head>
   <body class="full-page">
-    <nav class="navbar navbar-landing navbar-static-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                  data-target="#navigation-bar" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">NGS Workflow</a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="navigation-bar">
-          <ul class="nav navbar-nav navbar-right">
-            {% if user.is_authenticated %}#}
-            <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
-            <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
-          {% else %}
-            <li><a href="{% url 'account_login' %}">Sign In</a></li>
-            <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-          {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
+    {% include '_partial_navigation_login.html' %}
     <div class="container">
+      {% include '_partial_messages.html' %}
       {% block body %}
         {% block content %}
         {% endblock %}
