@@ -18,7 +18,9 @@
           </div>
         </div>
         <div class="modal-footer">
-          <a id="proxy-send" class="btn btn-default">Save and validate!</a>
+          <button id="proxy-send" class="ladda-button" data-style="zoom-out" data-color="blue">
+            <span class="ladda-label">Save and validate!</span>
+          </button>
         </div>
       </form>
     </div>
@@ -28,7 +30,10 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('#proxy-modal').modal('show');
-    $('#proxy-send').click(function () {
+    var proxy_button = $('#proxy-send');
+    var l = proxy_button.ladda();
+    proxy_button.click(function () {
+      l.ladda('start');
       $.ajax({
         url: '{% url 'setup_proxy' %}',
         method: 'POST',
@@ -42,6 +47,7 @@
             $('#proxy-modal').modal('hide');
           })
           .fail(function (msg) {
+            l.ladda('stop');
             $(alert('Proxy is not valid'));
           });
     });

@@ -2,17 +2,25 @@
 
 
 {% block content %}
+  {% if first_run %}
+    {% include 'rimrock_communication/_partial_initial_setup.html' %}
+  {% endif %}
+
   {% include 'rimrock_communication/_partial_messages.html' %}
   {% if proxy_invalid %}
     {% include 'rimrock_communication/_partial_proxy_validator.html' %}
   {% endif %}
+
+
 
   <div class="row">
     <div class="col-xs-12">
       <h1 class="page-header">
         Jobs status
         <small class="pull-right">
-          <a id="refresh-jobs">Refresh <i  class="glyphicon glyphicon-refresh"></i></a>
+          <button id="refresh-jobs" class="ladda-button" data-style="zoom-out" data-color="blue">
+            <span class="ladda-label">Refresh</span>
+          </button>
         </small>
       </h1>
     </div>
@@ -36,11 +44,17 @@
           </thead>
           <tbody>
             {% for j in job_list %}
+              {% if j.status == 'Q' %}
+              <tr class="info">
+              {% elif j.status == 'R' %}
+              <tr class="success">
+              {% else %}
               <tr>
+              {% endif %}
                 <td>{{ j.job_name }}</td>
                 <td>{{ j.job_queue_id }}</td>
                 <td>{{ j.get_status_display }}</td>
-                <td>{% firstof j.output_file_path "Default path" %}</td>
+                <td> <a href="{% url 'detail' j.id %}">Load output</a> </td>
                 <td>{{ j.sequence_read_url }}</td>
               </tr>
             {% endfor %}
@@ -54,8 +68,10 @@
   <script type="text/javascript">
     $(document).ready(function () {
       $('#navbar-index-link').addClass('active');
-      $('#refresh-jobs').click(function () {
-        $(alert('Page will refresh on retrieving results'));
+      var refresh_button = $('#refresh-jobs');
+      var l = refresh_button.ladda();
+      refresh_button.click(function () {
+        l.ladda('start');
         $.ajax({
           url: '{% url 'refresh_jobs' %}',
           method: 'POST',
@@ -67,6 +83,7 @@
             location.reload();
           })
           .fail(function () {
+              l.ladda( 'stop' );
             $(alert('Could not refresh jobs'));
           });
       });

@@ -2,6 +2,7 @@
 
 
 {% block content %}
+  {% include 'rimrock_communication/_partial_messages.html' %}
   {% if proxy_invalid %}
     {% include 'rimrock_communication/_partial_proxy_validator.html' %}
   {% endif %}
@@ -61,13 +62,19 @@
             </p>
           </div>
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button id="refresh-jobs" class="ladda-button" type="submit" data-style="zoom-out" data-color="blue">
+          <span class="ladda-label">Submit</span>
+        </button>
       </form>
     </div>
   </div>
   <script type="text/javascript">
     $(document).ready(function () {
+      $( 'button[type=submit]' ).ladda( 'bind' );
       $("#navbar-new-link").addClass("active");
+{#      {% for message in messages %}#}
+{#        console.log("{{ message.message }}");#}
+{#      {% endfor %}#}
     });
   </script>
 {% endblock %}
