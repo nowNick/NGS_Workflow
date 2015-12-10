@@ -19,11 +19,24 @@ def generate_command(job):
     output_path = job.output_file_path if job.output_file_path \
         else '{jobname}.txt'.format(jobname=job.job_name)
 
-    return "qsub -l walltime={walltime} -q {queue} {script_path} -F '{output_path}'" \
+    return "qsub -l walltime={walltime} -q {queue} {script_path} -F '{output_path} {seq_url}'" \
         .format(walltime=config['walltime'],
                 queue=config['queue'],
                 script_path=config['script_path'],
-                output_path=output_path)
+                output_path=output_path,
+                seq_url=job.sequence_read_url)
+
+def generate_setup_command():
+    config = {
+        "script_path": "DNA/webapp_scripts/setup.sh",
+        "walltime": "000:10:00",
+        "queue": "plgrid-testing",
+    }
+
+    return "qsub -l walltime={walltime} -q {queue} {script_path} -F" \
+        .format(walltime=config['walltime'],
+                queue=config['queue'],
+                script_path=config['script_path'])
 
 
 def send_rimrock_command(command, proxy):
@@ -117,6 +130,8 @@ def reload_jobs(user):
 def setup_environment(user):
     command = "git clone https://github.com/piotroramus/DNA.git"
     print send_rimrock_command(command, user.userproxy.proxy).text
+    command = generate_setup_command
+    print send_rimrock_command(command, user.userproxy.proxy).text
 
 def load_output_job(job):
     path = "{0}.txt".format(job.job_name)
@@ -124,7 +139,6 @@ def load_output_job(job):
         path = job.output_file_path
     command = "cat {0}".format(path)
     result = send_rimrock_command(command, job.user.userproxy.proxy)
-    # print result.text
     return json.loads(result.text)['standard_output']
 
 

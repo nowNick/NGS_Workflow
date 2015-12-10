@@ -28,6 +28,9 @@
           <label for="sequence-read-url">Sequence read file url (fastq.gz format)</label>
           <input name="sequence_read_url" type="text" class="form-control" id="sequence-read-url"
                  placeholder="File Url">
+          <p class="help-block">
+            <button id="hl" type="button" class="btn btn-sm btn-info"  data-toggle="popover" data-placement="right" title="Sample url" data-content="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/data/NA19726/sequence_read/SRR077642.filt.fastq.gz">Click to show sample url</button>
+          </p>
         </div>
 
         <a data-toggle="collapse" href="#advanced" id="advanced-options-trigger">
@@ -70,6 +73,7 @@
   </div>
   <script type="text/javascript">
     $(document).ready(function () {
+      $("[data-toggle=popover]").popover();
       $( 'button[type=submit]' ).ladda( 'bind' );
       $("#navbar-new-link").addClass("active");
 {#      {% for message in messages %}#}
