@@ -3,29 +3,73 @@
 
 {% block content %}
   {% include 'rimrock_communication/_partial_messages.html' %}
+  {% if proxy_invalid %}
+    {% include 'rimrock_communication/_partial_proxy_validator.html' %}
+  {% endif %}
 
   <div class="row">
     <div class="col-xs-12">
       <h1 class="page-header">
         Jobs status
+        <small class="pull-right">
+          <a id="refresh-jobs">Refresh <i  class="glyphicon glyphicon-refresh"></i></a>
+        </small>
       </h1>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-offset-2 col-md-8">
-      <ul>
-      {% for j in job_list %}
-        <li>Job: {{ j.job_name }} status {{ j.get_status_display }}</li>
-      {% empty %}
-        <li>No jobs...</li>
-      {% endfor %}
-      </ul>
+    <div class="col-md-12">
+      <div class="row">
+
+      </div>
+      {% if job_list %}
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Queue id</th>
+              <th>Status</th>
+              <th>Output path</th>
+              <th>Sequence read url</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for j in job_list %}
+              <tr>
+                <td>{{ j.job_name }}</td>
+                <td>{{ j.job_queue_id }}</td>
+                <td>{{ j.get_status_display }}</td>
+                <td>{% firstof j.output_file_path "Default path" %}</td>
+                <td>{{ j.sequence_read_url }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        No jobs...
+      {% endif %}
     </div>
   </div>
   <script type="text/javascript">
     $(document).ready(function () {
-      $("#navbar-index-link").addClass("active");
+      $('#navbar-index-link').addClass('active');
+      $('#refresh-jobs').click(function () {
+        $(alert('Page will refresh on retrieving results'));
+        $.ajax({
+          url: '{% url 'refresh_jobs' %}',
+          method: 'POST',
+          data: {
+            'csrfmiddlewaretoken': getCookie('csrftoken')
+          }
+        })
+          .done(function () {
+            location.reload();
+          })
+          .fail(function () {
+            $(alert('Could not refresh jobs'));
+          });
+      });
     });
   </script>
 {% endblock %}

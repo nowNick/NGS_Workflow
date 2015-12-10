@@ -1,3 +1,11 @@
 .navbar-padded {
     padding: 0 20px;
 }
+
+#refresh-jobs {
+    cursor: pointer;
+}
+
+#refresh-jobs:hover, #refresh-jobs:active {
+    text-decoration: none;
+}
