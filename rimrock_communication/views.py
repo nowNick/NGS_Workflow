@@ -8,9 +8,11 @@ from utils import new_job, user_has_valid_proxy, verify_proxy, reload_jobs, setu
 
 
 class JobListView(ListView):
-    queryset = Job.objects.order_by('-created_time')
     model = Job
     template_name = 'rimrock_communication/index.html'
+
+    def get_queryset(self):
+        return Job.objects.filter(user=self.request.user).order_by('-created_time')
 
     def get_context_data(self, **kwargs):
         context = super(JobListView, self).get_context_data(**kwargs)
@@ -40,7 +42,7 @@ def first_run_configuration(request):
 def refresh_output(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     output = load_output_job(job)
-    ctx = {'job': job, 'output' : output}
+    ctx = {'job': job, 'output': output}
     return render(request, 'rimrock_communication/detail.html', ctx)
 
 
