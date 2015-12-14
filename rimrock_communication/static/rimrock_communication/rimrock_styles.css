@@ -9,3 +9,13 @@
 #refresh-jobs:hover, #refresh-jobs:active {
     text-decoration: none;
 }
+
+textarea#sample-url-input {
+    resize: none;
+    cursor: pointer;
+}
+
+.header-button{
+    margin: 40px 0 20px 0;
+    padding: 0 0 10px 0;
+}

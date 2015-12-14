@@ -29,7 +29,20 @@
           <input name="sequence_read_url" type="text" class="form-control" id="sequence-read-url"
                  placeholder="File Url">
           <p class="help-block">
-            <button id="hl" type="button" class="btn btn-sm btn-info"  data-toggle="popover" data-placement="right" title="Sample url" data-content="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/data/NA19726/sequence_read/SRR077642.filt.fastq.gz">Click to show sample url</button>
+            <button id="hl"
+                    data-container="body"
+                    type="button"
+                    class="btn btn-sm btn-info"
+                    data-toggle="popover"
+                    data-placement="right"
+                    data-html="true"
+                    title="Sample url"
+                    data-content="<textarea rows='4'
+                                         id='sample-url-input'
+                                         class='form-control'
+                                         readonly>ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/data/NA19726/sequence_read/SRR077642.filt.fastq.gz</textarea>">
+                      Click to show sample url
+            </button>
           </p>
         </div>
 
@@ -52,18 +65,6 @@
               Remeber! You must have correct permisisons to write to specified directory!
             </p>
           </div>
-
-          <div class="form-group">
-            <label for="workspace-path">
-              Provide a workspace directory path. (Default is: $HOME/results/job_name.txt).
-            </label>
-            <input name="workspace_directory" type="text" class="form-control" id="workspace-path"
-                   placeholder="Absolute path - worksapce">
-
-            <p class="help-block">
-              Remeber! You must have correct permisisons to write to specified directory!
-            </p>
-          </div>
         </div>
         <button id="refresh-jobs" class="ladda-button" type="submit" data-style="zoom-out" data-color="blue">
           <span class="ladda-label">Submit</span>
@@ -73,12 +74,15 @@
   </div>
   <script type="text/javascript">
     $(document).ready(function () {
-      $("[data-toggle=popover]").popover();
-      $( 'button[type=submit]' ).ladda( 'bind' );
-      $("#navbar-new-link").addClass("active");
-{#      {% for message in messages %}#}
-{#        console.log("{{ message.message }}");#}
-{#      {% endfor %}#}
+      $('[data-toggle=popover]').popover();
+      $('[data-toggle=popover]').on('shown.bs.popover', function () {
+        $('#sample-url-input').click(function () {
+          $(this).select();
+        });
+      });
+      $('button[type=submit]').ladda( 'bind' );
+      $('#navbar-new-link').addClass("active");
+
     });
   </script>
 {% endblock %}

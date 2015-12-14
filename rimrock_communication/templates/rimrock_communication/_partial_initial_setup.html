@@ -12,7 +12,7 @@
             right now or you can do it manually later.</p>
         </div>
         <div class="modal-footer">
-          <button id="proxy-send" class="ladda-button" data-style="zoom-out" data-color="blue" data-dismiss="modal">
+          <button class="ladda-button" data-style="zoom-out" data-color="blue" data-dismiss="modal">
             <span class="ladda-label">I'll do it manually</span>
           </button>
           <button id="first-run-send" class="ladda-button" data-style="zoom-out" data-color="blue">
@@ -35,12 +35,12 @@
         url: '{% url 'configure_env' %}',
         method: 'POST',
         data: {
-          'proxy': $('#proxy-field').val(),
           'csrfmiddlewaretoken': getCookie('csrftoken')
         }
       })
           .done(function (msg) {
-            $(alert('You are ready!'));
+            $(alert('Ok. Job deployed. Installation will soon begin but it could take 4 hours or more... ' +
+                'Better come back tomorrow'));
             $('#first-run-modal').modal('hide');
           })
           .fail(function (msg) {

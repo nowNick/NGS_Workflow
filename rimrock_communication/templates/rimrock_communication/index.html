@@ -14,15 +14,20 @@
 
 
   <div class="row">
-    <div class="col-xs-12">
+    <div class="col-md-9 col-xs-6">
       <h1 class="page-header">
         Jobs status
-        <small class="pull-right">
-          <button id="refresh-jobs" class="ladda-button" data-style="zoom-out" data-color="blue">
-            <span class="ladda-label">Refresh</span>
-          </button>
-        </small>
       </h1>
+    </div>
+    <div class="col-md-3 col-xs-6 header-button">
+      <div class="btn-group" role="group">
+        <a href="{% url 'new' %}" type="button" class="btn ladda-button" data-color="green">
+          <span class="ladda-label">New job <i class="glyphicon glyphicon-plus"></i></span>
+        </a>
+        <button id="refresh-jobs" type="button" class="btn ladda-button" data-style="zoom-out" data-color="blue">
+          <span class="ladda-label">Refresh</span>
+        </button>
+      </div>
     </div>
   </div>
 

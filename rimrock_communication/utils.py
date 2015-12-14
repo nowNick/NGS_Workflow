@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.utils.datetime_safe import datetime
 import requests
 from django.contrib import messages
-from rimrock_communication.models import Job
+from rimrock_communication.models import Job, UserProxy
 from rimrock_communication.forms import JobForm, UserProxyForm
 import re
 
@@ -12,16 +12,18 @@ import re
 def generate_command(job):
     config = {
         "script_path": "DNA/webapp_scripts/webapp.sh",
-        "walltime": "000:10:00",
-        "queue": "plgrid-testing",
+        "walltime": "004:00:00",
+        "queue": "plgrid",
+        "mem": "8gb"
     }
 
     output_path = job.output_file_path if job.output_file_path \
         else '{jobname}.txt'.format(jobname=job.job_name)
 
-    return "qsub -l walltime={walltime} -q {queue} {script_path} -F '{output_path} {seq_url}'" \
+    return "qsub -l walltime={walltime},mem={mem} -q {queue} {script_path} -F '{output_path} {seq_url}'" \
         .format(walltime=config['walltime'],
                 queue=config['queue'],
+                mem=config['mem'],
                 script_path=config['script_path'],
                 output_path=output_path,
                 seq_url=job.sequence_read_url)
@@ -29,12 +31,14 @@ def generate_command(job):
 def generate_setup_command():
     config = {
         "script_path": "DNA/webapp_scripts/setup.sh",
-        "walltime": "000:10:00",
-        "queue": "plgrid-testing",
+        "walltime": "004:00:00",
+        "queue": "plgrid",
+        "mem": "8gb"
     }
 
-    return "qsub -l walltime={walltime} -q {queue} {script_path} -F" \
+    return "qsub -l walltime={walltime},mem={mem} -q {queue} {script_path}" \
         .format(walltime=config['walltime'],
+                mem=config['mem'],
                 queue=config['queue'],
                 script_path=config['script_path'])
 
@@ -80,17 +84,26 @@ def dispatch_job(job, request):
 
 def verify_proxy(request):
     proxy_form = UserProxyForm(request.POST)
-    userproxy = proxy_form.save(commit=False)
+    newproxy = proxy_form.save(commit=False)
     command = 'voms-proxy-info'
-    r = send_rimrock_command(command, userproxy.proxy)
+    r = send_rimrock_command(command, newproxy.proxy)
     try:
         r.raise_for_status()
-        userproxy.user = request.user
+        newproxy.user = request.user
         pattern = re.compile(r'timeleft\s+?:\s+?(.*?)\\n')
+        print r.content
         timeleft = pattern.search(r.text).group(1)
         d = datetime.strptime(timeleft, "%H:%M:%S")
-        userproxy.valid_until = timezone.now() + timedelta(hours=d.hour, minutes=d.minute)
-        userproxy.save()
+        newproxy.valid_until = timezone.now() + timedelta(hours=d.hour, minutes=d.minute)
+
+        try:
+            oldproxy = UserProxy.objects.get(user=request.user)
+            oldproxy.delete()
+            print "Proxy deleted"
+        except UserProxy.DoesNotExist:
+            print "No previous proxy"
+
+        newproxy.save()
         return True
 
     except requests.exceptions.HTTPError:
@@ -128,9 +141,9 @@ def reload_jobs(user):
 
 
 def setup_environment(user):
-    command = "git clone https://github.com/piotroramus/DNA.git"
+    command = "git clone https://github.com/piotroramus/DNA.git;cd DNA;git checkout remotes/origin/webapp-integration;git checkout -b webapp-integration"
     print send_rimrock_command(command, user.userproxy.proxy).text
-    command = generate_setup_command
+    command = generate_setup_command()
     print send_rimrock_command(command, user.userproxy.proxy).text
 
 def load_output_job(job):

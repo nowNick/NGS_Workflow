@@ -150,3 +150,17 @@ form .errorlist {
     padding: 10px;
     left: 45%;
 }
+
+@media (max-width: 959px){
+    h1.form-title small {
+        font-size: 32px;
+    }
+
+    h1.form-title {
+        font-size: 48px;
+    }
+
+    body {
+        font-size: 28px;
+    }
+}

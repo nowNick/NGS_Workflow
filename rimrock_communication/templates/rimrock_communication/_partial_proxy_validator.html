@@ -1,7 +1,7 @@
 <div class="modal fade" id="proxy-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form>
+      <form id="proxy-form">
         {% csrf_token %}
         <div class="modal-header">
           <h3 class="modal-title" id="myModalLabel">Please provide PROXY</h3>
@@ -32,7 +32,7 @@
     $('#proxy-modal').modal('show');
     var proxy_button = $('#proxy-send');
     var l = proxy_button.ladda();
-    proxy_button.click(function () {
+    $('#proxy-form').submit(function (event) {
       l.ladda('start');
       $.ajax({
         url: '{% url 'setup_proxy' %}',
@@ -50,6 +50,7 @@
             l.ladda('stop');
             $(alert('Proxy is not valid'));
           });
+      event.preventDefault();
     });
   });
 </script>
