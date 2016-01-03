@@ -1,0 +1,48 @@
+{% extends 'rimrock_communication/base.html' %}
+
+
+{% block content %}
+  {% if first_run %}
+    {% include 'rimrock_communication/_partial_initial_setup.html' %}
+  {% endif %}
+
+  {% include 'rimrock_communication/_partial_messages.html' %}
+  {% if proxy_invalid %}
+    {% include 'rimrock_communication/_partial_proxy_validator.html' %}
+  {% endif %}
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h1 class="page-header">
+        {{ job.job_name }}
+      </h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="well">
+        {% if output %}
+        <pre>
+          {{ output }}
+        </pre>
+        {% else %}
+        No output
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#navbar-index-link').addClass('active');
+      var refresh_button = $('refresh-job');
+      var l = refresh_button.ladda();
+      refresh_button.click(function () {
+        l.ladda('start');
+        location.reload();
+      });
+    });
+  </script>
+{% endblock %}
+
+

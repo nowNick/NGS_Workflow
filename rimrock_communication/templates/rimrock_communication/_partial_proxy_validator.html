@@ -1,0 +1,56 @@
+<div class="modal fade" id="proxy-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="proxy-form">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h3 class="modal-title" id="myModalLabel">Please provide PROXY</h3>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="proxy-field">PROXY token</label>
+            <textarea name="proxy" id="proxy-field" class="form-control" rows="5"></textarea>
+
+            <p class="help-block">
+              For information on how to generate proxy click
+              <a href="https://docs.cyfronet.pl/pages/viewpage.action?pageId=16025029">here</a>
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="proxy-send" class="ladda-button" data-style="zoom-out" data-color="blue">
+            <span class="ladda-label">Save and validate!</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#proxy-modal').modal('show');
+    var proxy_button = $('#proxy-send');
+    var l = proxy_button.ladda();
+    $('#proxy-form').submit(function (event) {
+      l.ladda('start');
+      $.ajax({
+        url: '{% url 'setup_proxy' %}',
+        method: 'POST',
+        data: {
+          'proxy' : $('#proxy-field').val(),
+          'csrfmiddlewaretoken': getCookie('csrftoken')
+        }
+      })
+          .done(function (msg) {
+            $(alert(msg));
+            $('#proxy-modal').modal('hide');
+          })
+          .fail(function (msg) {
+            l.ladda('stop');
+            $(alert('Proxy is not valid'));
+          });
+      event.preventDefault();
+    });
+  });
+</script>

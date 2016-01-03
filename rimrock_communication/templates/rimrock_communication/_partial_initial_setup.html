@@ -1,0 +1,52 @@
+<div class="modal fade" id="first-run-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form>
+        {% csrf_token %}
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="myModalLabel">First time here?</h3>
+        </div>
+        <div class="modal-body">
+          <p>Seems like you are here for the first time. You probably did not configure your environment? We can do this
+            right now or you can do it manually later.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="ladda-button" data-style="zoom-out" data-color="blue" data-dismiss="modal">
+            <span class="ladda-label">I'll do it manually</span>
+          </button>
+          <button id="first-run-send" class="ladda-button" data-style="zoom-out" data-color="blue">
+            <span class="ladda-label">Let's configure!</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#first-run-modal').modal('show');
+    var first_run_button = $('#first-run-send');
+    var l = first_run_button.ladda();
+    first_run_button.click(function () {
+      l.ladda('start');
+      $.ajax({
+        url: '{% url 'configure_env' %}',
+        method: 'POST',
+        data: {
+          'csrfmiddlewaretoken': getCookie('csrftoken')
+        }
+      })
+          .done(function (msg) {
+            $(alert('Ok. Job deployed. Installation will soon begin but it could take 4 hours or more... ' +
+                'Better come back tomorrow'));
+            $('#first-run-modal').modal('hide');
+          })
+          .fail(function (msg) {
+            l.ladda('stop');
+            $(alert('Something went wrong...'));
+          });
+    });
+  });
+</script>

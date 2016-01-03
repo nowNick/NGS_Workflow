@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head_title %}NGS Workflow{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="wrap">
+        <div class="landing-wrapper">
+          <h1 class="form-title">
+            <div class="row">
+              <div class="col-xs-12">
+                <span class="the-title">Analyze genes</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-offset-2 col-md-8">
+                <small>
+                  With NGS Workflow you are able to run genome analysis tools.
+                  Just give us an url from sequence read and we will analyze the data for you.
+                </small>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-offset-2 col-md-8">
+                <small>
+                  But first... <a href="{% url 'account_login' %}">sign in</a> or if you do not have an account -
+                  <a href="{% url 'account_signup' %}">sign up</a>.
+                </small>
+              </div>
+            </div>
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

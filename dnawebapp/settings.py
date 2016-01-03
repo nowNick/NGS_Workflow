@@ -37,6 +37,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rimrock_communication',
+
+    # django allauth requirements
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,7 +63,7 @@ ROOT_URLCONF = 'dnawebapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'common_templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,16 +76,61 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
 WSGI_APPLICATION = 'dnawebapp.wsgi.application'
 
+SOCIALACCOUNT_PROVIDERS = \
+    {'openid':
+         {'SERVERS':
+              dict(id='plgrid', name='PlGrid', openid_url='https://openid.plgrid.pl')},
+     'facebook':
+         {'METHOD': 'oauth2',
+          'SCOPE': ['email', 'public_profile', 'user_friends'],
+          'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+          'FIELDS': [
+              'id',
+              'email',
+              'name',
+              'first_name',
+              'last_name',
+              'verified',
+              'locale',
+              'timezone',
+              'link',
+              'gender',
+              'updated_time'],
+          'EXCHANGE_TOKEN': True,
+          'LOCALE_FUNC': 'path.to.callable',
+          'VERIFIED_EMAIL': False,
+          'VERSION': 'v2.4'}}
+
+SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ngsdb',
+        'USER': 'postgres',
+        'PASSWORD': 'lincoln123',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -100,3 +153,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "common_static"),
+)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+LOGIN_REDIRECT_URL = "/jobs"
